@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Y11 Lambo</string>
+    <string name="configBtn">Config</string>
+    <string name="inputHostIpLabel">Host IP</string>
+    <string name="inputHostPortLabel">Host Port</string>
+    <string name="inputCodeLabel">Code</string>
+    <string name="saveBtn">Save</string>
+    <string name="inputDevice">Master</string>
+    <string name="title_activity_lambo">LamboActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="slaveConfigBtn">Config</string>
+    <string name="masterBtn">Master</string>
+    <string name="mainSlaveBtn">Slave</string>
+    <string name="mainMasterBtn">Master</string>
+</resources>
