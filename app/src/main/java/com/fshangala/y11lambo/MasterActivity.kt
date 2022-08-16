@@ -23,11 +23,11 @@ class MasterActivity : AppCompatActivity() {
 
         val connectionStatus = findViewById<TextView>(R.id.masterConnectionStatus)
 
-        model!!.connectionStatus.observe(this, Observer{
-            runOnUiThread{
+        model!!.connectionStatus.observe(this) {
+            runOnUiThread {
                 connectionStatus.text = it
             }
-        })
+        }
 
         model!!.createConnection(sharedPref!!)
     }

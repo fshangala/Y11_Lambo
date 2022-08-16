@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -15,14 +16,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-
-class SlaveViewModel:ViewModel(){
-    var sampleStatus = MutableLiveData<String>("")
-}
+import com.fshangala.y11.SlaveViewModel
 
 class SlaveActivity : AppCompatActivity() {
     private var webView: WebView? = null
-    private var model:SlaveViewModel? = null
+    private var model: SlaveViewModel? = null
     private var slaveStatus:TextView? = null
     private var progressBar:ProgressBar? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,28 +29,44 @@ class SlaveActivity : AppCompatActivity() {
 
         progressBar = findViewById(R.id.progressBar)
         webView = findViewById(R.id.webView)
-        webView!!.settings.javaScriptEnabled = true
+        true.also { webView!!.settings.javaScriptEnabled = it }
         slaveStatus = findViewById(R.id.slaveStatus)
         model = ViewModelProvider(this)[SlaveViewModel::class.java]
-        webView!!.loadUrl("https://jack9.io/d/index.html#/")
+        val url = "https://jack9.io/d/index.html#/"
+        webView!!.loadUrl(url)
         webView!!.webViewClient = object : WebViewClient(){
             override fun onPageFinished(view: WebView?, url: String?) {
-                view!!.evaluateJavascript("javascript:alert(\"loading done\")",ValueCallback<String>(){
-                    model!!.sampleStatus.value = it
-                })
-                progressBar!!.visibility = View.GONE
+                SystemClock.sleep(5000)
+                view!!.evaluateJavascript("document.querySelector(\"input[name='loginName']\").value='fishing'"){
+                    runOnUiThread{
+                        slaveStatus!!.text = it
+                    }
+                }
+                view!!.evaluateJavascript("document.querySelector(\"input[name='password']\").value='somebody'"){
+                    runOnUiThread{
+                        slaveStatus!!.text = it
+                    }
+                }
+                view!!.evaluateJavascript("document.querySelector(\"form[name='loginForm']\").submit()"){
+                    runOnUiThread{
+                        slaveStatus!!.text = it
+                    }
+                }
+                runOnUiThread{
+                    slaveStatus!!.text = "Loaded!"
+                }
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                progressBar!!.visibility = View.VISIBLE
+                runOnUiThread{
+                    slaveStatus!!.text = "Loading..."
+                }
             }
         }
 
-        model!!.sampleStatus.observe(this, Observer {
-            runOnUiThread{
-                slaveStatus!!.text = it
-            }
-        })
+        model!!.slaveStatus.observe(this) {
+            slaveStatus!!.post { slaveStatus!!.text = it }
+        }
     }
 
     fun openConfig(view: View){
